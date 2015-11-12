@@ -1527,39 +1527,30 @@
             connection</dfn> using a <a>presentation connection</a> <em>S</em>,
             it MUST run the following steps:
           </p>
+          <dl>
+            <dt>Input</dt>
+            <dd><em>S</em>, a <code>PresentationConnection</code>.</dd>
+            <dt>Output</dt>
+            <dd><em>S</em>, the same <code>PresentationConnection</code>.</dd>
+          </dl>
           <ol>
+            <li>
+              If the <a>presentation connection state</a> of <em>S</em> is
+              anything but <code>disconnected</code>, return <em>S</em>.
+            </li>
             <li>
               <a>Queue a task</a> <em>T</em> to connect the <a>presentation
               connection</a> <em>S</em> to the <a>receiving browsing
               context</a>.
             </li>
-            <li>If <em>T</em> completes successfully, run the following steps:
-              <ol>
-                <li>Set the <a>presentation connection state</a> of
-                <var>S</var> to <code>connected.</code>
-                </li>
-                <li>
-                  <a>Queue a task</a> <em>T</em> to run the following steps in
-                  order:
-                  <ol>
-                    <li>For each <var>known connection</var> in the <a>set of
-                    presentations</a>:
-                      <ol>
-                        <li>If the <a>presentation identifier</a> of <var>known
-                        connection</var> and <var>S</var> are equal, then run
-                        the following steps:
-                          <ol>
-                            <li>
-                              <a>Queue a task</a> to <a>fire</a> an event named
-                              <code>statechange</code> at <em>s</em>.
-                            </li>
-                          </ol>
-                        </li>
-                      </ol>
-                    </li>
-                  </ol>
-                </li>
-              </ol>
+            <li>Wait for <em>T</em> to complete.</li>
+            <li>
+              If <em>T</em> completes successfully, set the
+              <a>presentation connection state</a> of <var>S</var> to
+              <code>connected.</code>
+            </li>
+            <li>
+              Return <var>S</var>.
             </li>
           </ol>
           <div class="note">
