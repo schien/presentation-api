@@ -542,23 +542,23 @@
           } else if (this.state == "terminated") {
             // The presentation has terminated.  Offer the user a chance to
             // start a new presentation.
-          } else if (this.state == "connected") {
-            // send initial message to presentation page
-            connection.send("say hello");
           }
       };
       // register message handler
       connection.onmessage = function (evt) {
         console.log("receive message", evt.data);
       };
+      // Connection state is 'connected' when Promise is resolved.
+      // Send initial message to presentation page.
+      connection.send("say hello");
     }
   };
   var endConnection = function () {
-    connection &amp;&amp; connection.terminate();
+    connection &amp;&amp; connection.close();
     // remove old presId from localStorage if exists
     localStorage &amp;&amp; delete localStorage["presId"];
-  };
-&lt;/script&gt;
+  }
+&lt;/script&gt
 
 </pre>
       </section>
@@ -571,8 +571,8 @@
 &lt;script&gt;
   var addConnection = function(connection) {
     connection.onstatechange = function () {
-      // connection.state is either 'connected,' 'closed,' or 'terminated'
-      console.log("connection's state is now", connection.state);
+      // connection.state is either 'closed' or 'terminated'
+      console.log("connection's state is now ", connection.state);
     };
     connection.onmessage = function (evt) {
       if (evt.data == "say hello")
@@ -1338,17 +1338,22 @@
             <em>S</em>} to the <a>set of presentations</a>.
             </li>
             <li>
-              <a>Resolve</a> <em>P</em> with <em>S</em>.
-            </li>
-            <li>
-              <a>Queue a task</a> to <a>fire</a> an event named
-              <code>connectionavailable</code> at
-              <code>presentationRequest</code> with <em>S</em> as its
-              <code>connection</code> attribute.
-            </li>
-            <li>
               <a>Establish a presentation connection</a> with <em>S</em>.
             </li>
+            <li>If the previous step succeeds, then run the following steps:
+              <ul>
+                <li>
+                  <a>Resolve</a> <em>P</em> with <em>S</em>.
+                </li>
+                <li>
+                  <a>Queue a task</a> to <a>fire</a> an event named
+                  <code>connectionavailable</code> at
+                  <code>presentationRequest</code> with <em>S</em> as its
+                  <code>connection</code> attribute.
+                </li>
+              </ul>
+            <li>Otherwise, <a>reject</a> <em>P</em> with an <a>OperationError</a>
+                exception.</li>
           </ol>
           <div class="note">
             The details of implementing the permission request and display
